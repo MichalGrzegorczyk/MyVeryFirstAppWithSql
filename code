@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace Connection
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        public string conString = "Data Source=K\\LOCALSQL;Initial Catalog=ConnectionDb;Integrated Security=True";
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(conString);
+            con.Open();
+            if(con.State==System.Data.ConnectionState.Open)
+            {
+                string q = "insert into Test(id,Name)values('" + txtId.Text.ToString() + "','" + txtName.Text + "')";
+                SqlCommand cmd = new SqlCommand(q, con);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("Connection made Successfully!");
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(conString);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("Select name from Test where id = @id", con);
+            cmd.Parameters.AddWithValue("@ID", int.Parse(textBox1.Text));
+            SqlDataReader da = cmd.ExecuteReader();
+            while(da.Read())
+            {
+                textBox2.Text = da.GetValue(0).ToString();
+          
+            }
+            con.Close();
+        }
+    }
+}
